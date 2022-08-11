@@ -1,4 +1,7 @@
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import \
+    AbstractUser, BaseUserManager, Group, Permission
+from django.utils.translation import gettext_lazy as _
+
 from django.db import models
 
 
@@ -63,3 +66,32 @@ class Employee(models.Model):
 
     def __str__(self):
         return self.user.first_name + ' ' + self.user.last_name
+
+
+class Team(Group):
+    class Meta:
+        proxy = True
+        app_label = 'authentication'
+        verbose_name = _('Team')
+
+    def __str__(self):
+        return self.name
+
+
+class TeamMember(models.Model):
+    """Through table to establish the team membership of an employee"""
+    employee = models.ForeignKey(to=User,
+                                 on_delete=models.CASCADE,
+                                 related_name='employee')
+
+    team = models.ForeignKey(to=Team,
+                             on_delete=models.SET_NULL,
+                             related_name='team',
+                             null=True)
+
+    class Meta:
+        unique_together = ('employee', 'team')
+        verbose_name_plural = _('Team Members')
+
+    def __str__(self):
+        return f'{self.team}_{self.employee}'

@@ -66,31 +66,3 @@ class Event(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class Team(models.Model):
-    """The model for Team"""
-
-    name = models.CharField(max_length=50)
-    permissions = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.name
-
-
-class TeamMembers(models.Model):
-    """Through table to establish the team membership of an employee"""
-    employee = models.ForeignKey(to=get_user_model(),
-                                 on_delete=models.CASCADE,
-                                 related_name='employee')
-
-    team = models.ForeignKey(to=Team,
-                             on_delete=models.SET_NULL,
-                             related_name='team',
-                             null=True)
-
-    class Meta:
-        unique_together = ('employee', 'team')
-
-    def __str__(self):
-        return f'{self.employee}_{self.team}'
