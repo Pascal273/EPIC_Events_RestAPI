@@ -69,6 +69,7 @@ class Employee(models.Model):
 
 
 class Team(Group):
+
     class Meta:
         proxy = True
         app_label = 'authentication'
@@ -78,7 +79,7 @@ class Team(Group):
         return self.name
 
 
-class TeamMember(models.Model):
+class TeamMembership(models.Model):
     """Through table to establish the team membership of an employee"""
     employee = models.ForeignKey(to=User,
                                  on_delete=models.CASCADE,
@@ -91,7 +92,8 @@ class TeamMember(models.Model):
 
     class Meta:
         unique_together = ('employee', 'team')
-        verbose_name_plural = _('Team Members')
+        verbose_name_plural = _('Team Memberships')
 
     def __str__(self):
-        return f'{self.team}_{self.employee}'
+        return f'{self.team} | ' \
+               f'{self.employee.first_name} {self.employee.last_name}'

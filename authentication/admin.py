@@ -11,12 +11,13 @@ class EmployeeInline(admin.StackedInline):
     model = Employee
     can_delete = False
     verbose_name_plural = 'Employees'
+    max_num = 1
 
 
 class TeamMembershipInline(admin.StackedInline):
     """Custom Inline Model to integrate the team membership
      into the User-Admin page"""
-    model = TeamMember
+    model = TeamMembership
     can_delete = False
     verbose_name = 'Team'
     max_num = 1
@@ -62,4 +63,4 @@ admin.site.register(User, EmployeeUserAdmin)
 
 admin.site.unregister(Group)
 admin.site.register(Team, GroupAdmin)
-admin.site.register(TeamMember)
+admin.site.register(TeamMembership)
