@@ -11,3 +11,19 @@ class ClientViewSet(viewsets.ModelViewSet):
     queryset = Client.objects.all().order_by('date_updated')
     serializer_class = ClientSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+class ContractViewSet(viewsets.ModelViewSet):
+    """API endpoint that allows Contracts to be viewed."""
+
+    queryset = Contract.objects.all().order_by('date_updated')
+    serializer_class = ContractSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class EventViewSet(viewsets.ModelViewSet):
+    """API endpoint that allows Events to be viewed."""
+
+    queryset = Event.objects.all().order_by('date_updated')
+    serializer_class = EventSerializer
+    permission_classes = [permissions.IsAuthenticated]
