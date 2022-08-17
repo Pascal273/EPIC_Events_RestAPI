@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin, GroupAdmin
-from django.contrib.auth.models import Permission
 
 from .models import *
 
@@ -43,8 +42,10 @@ class EmployeeUserAdmin(UserAdmin):
 
     list_display = ('email', 'first_name', 'last_name', 'is_staff')
     fieldsets = (
-        ('Personal info', {'fields': ('first_name', 'last_name', 'email', 'password')}),
-        ('Important dates', {'fields': ('last_login', 'date_joined')}),
+        ('Personal info', {
+            'fields': ('first_name', 'last_name', 'email', 'password')}),
+        ('Important dates', {
+            'fields': ('last_login', 'date_joined')}),
         # ('Permissions', {'fields': (
         # 'is_active', 'is_staff', 'is_superuser', 'groups',
         # 'user_permissions')}),

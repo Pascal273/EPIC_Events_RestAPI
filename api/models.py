@@ -1,19 +1,23 @@
+from datetime import datetime
+
 from django.db import models
 from django.contrib.auth import get_user_model
+
+from authentication.models import Employee
 
 
 class Client(models.Model):
     """ The Model for Clients"""
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
-    email = models.CharField(max_length=30)
+    email = models.CharField(max_length=30, unique=True)
     phone = models.CharField(max_length=30, null=True)
     mobile = models.CharField(max_length=30, null=True)
     company_name = models.CharField(max_length=50)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     sales_contact = models.ForeignKey(
-        to=get_user_model(), on_delete=models.SET_NULL, null=True)
+        to=Employee, on_delete=models.SET_NULL, null=True)
     existing = models.BooleanField(default=False)
 
     def __str__(self):
@@ -39,7 +43,9 @@ class Contract(models.Model):
     payment_due = models.DateTimeField()
 
     def __str__(self):
-        return f'{self.client} - contract from {self.date_created}'
+        datetime_obj = self.date_created
+        datetime_str = datetime_obj.strftime("%m.%d.%Y, %H:%M")
+        return f'{self.client} - contract from {datetime_str}'
 
 
 class Event(models.Model):
@@ -53,12 +59,14 @@ class Event(models.Model):
     )
 
     name = models.CharField(max_length=50, null=True)
-    contract = models.ForeignKey(to=Contract, on_delete=models.CASCADE)
+    contract = models.OneToOneField(to=Contract,  # only one event per contract
+                                    on_delete=models.CASCADE,
+                                    related_name='contract')
     client = models.ForeignKey(to=Client, on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     support_contact = models.ForeignKey(
-        to=get_user_model(), on_delete=models.SET_NULL, null=True)
+        to=Employee, on_delete=models.SET_NULL, null=True)
     status = models.CharField(max_length=10, choices=STATUS_OPTIONS)
     attendees = models.IntegerField()
     event_date = models.DateTimeField(null=True)

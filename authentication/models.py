@@ -58,7 +58,8 @@ class User(AbstractUser):
 class Employee(models.Model):
     user = models.OneToOneField(to=User,
                                 on_delete=models.CASCADE,
-                                related_name='user')
+                                related_name='user',
+                                null=False)
     phone = models.CharField(max_length=30, null=True)
     mobile = models.CharField(max_length=30, null=True)
     hire_date = models.DateField(null=True)
@@ -81,19 +82,20 @@ class Team(Group):
 
 class TeamMembership(models.Model):
     """Through table to establish the team membership of an employee"""
-    employee = models.ForeignKey(to=User,
-                                 on_delete=models.CASCADE,
-                                 related_name='employee')
+    employee = models.OneToOneField(to=User,
+                                    on_delete=models.CASCADE,
+                                    related_name='employee')
 
     team = models.ForeignKey(to=Team,
                              on_delete=models.SET_NULL,
                              related_name='team',
-                             null=True)
+                             null=True
+                             )
 
     class Meta:
-        unique_together = ('employee', 'team')
+        unique_together = ['employee', 'team']
         verbose_name_plural = _('Team Memberships')
 
     def __str__(self):
-        return f'{self.team} | ' \
+        return f'{self.team.name} | ' \
                f'{self.employee.first_name} {self.employee.last_name}'

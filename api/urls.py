@@ -5,9 +5,26 @@ from api import views
 
 router = DefaultRouter()
 
-router.register(r'clients', views.ClientViewSet)
-router.register(r'contracts', views.ContractViewSet)
-router.register(r'events', views.EventViewSet)
+router.register(
+    r'potential_clients',
+    views.PotentialClientViewSet,
+    basename='potential_clients'
+)
+router.register(
+    r'existing_clients',
+    views.ExistingClientViewSet,
+    basename='existing_clients'
+)
+router.register(
+    r'contracts',
+    views.ContractViewSet,
+    basename='contracts'
+)
+router.register(
+    r'events',
+    views.EventViewSet,
+    basename='events'
+)
 
 urlpatterns = [
     path('', include(router.urls))
