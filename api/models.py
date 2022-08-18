@@ -1,4 +1,4 @@
-from datetime import datetime
+from .validators import validate_date_not_in_past
 
 from django.db import models
 from django.contrib.auth import get_user_model
@@ -40,7 +40,7 @@ class Contract(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=10, choices=STATUS_OPTIONS)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    payment_due = models.DateTimeField()
+    payment_due = models.DateField(validators=[validate_date_not_in_past])
 
     def __str__(self):
         datetime_obj = self.date_created

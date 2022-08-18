@@ -17,12 +17,23 @@ class TeamSerializer(serializers.ModelSerializer):
 
 class TeamMembershipSerializer(serializers.ModelSerializer):
 
-    team = serializers.CharField()
-    employee = serializers.EmailField()
+    team = serializers.SlugRelatedField(
+        slug_field='name',
+        queryset=Team.objects.all(),
+    )
+    employee = serializers.SlugRelatedField(
+        slug_field='email',
+        # only show users that aren't members of any team already
+        queryset=User.objects.all().exclude(
+            user__in=[
+                member.employee.user for member in TeamMembership.objects.all()
+            ]
+        ),
+    )
 
     class Meta:
         model = TeamMembership
-        fields = '__all__'
+        fields = ['id', 'team', 'employee']
 
 
 class EmployeeSerializer(serializers.ModelSerializer):

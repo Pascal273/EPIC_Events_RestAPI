@@ -23,7 +23,7 @@ class ClientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Client
-        fields = ['client_id', 'first_name', 'last_name', 'email', 'phone',
+        fields = ['first_name', 'last_name', 'email', 'phone',
                   'mobile', 'company_name', 'date_created', 'date_updated',
                   'sales_contact', 'existing']
         read_only_fields = ['existing', ]
@@ -62,7 +62,11 @@ class EventSerializer(serializers.ModelSerializer):
     )
     contract = serializers.HyperlinkedRelatedField(
         view_name='contracts-detail',
-        queryset=Contract.objects.all()
+        queryset=Contract.objects.all().exclude(
+            contract__in=[
+                event.contract.id for event in Event.objects.all()
+            ]
+        )
     )
 
     def create(self, validated_data):

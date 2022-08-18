@@ -17,7 +17,7 @@ class ExistingClientViewSet(viewsets.ModelViewSet):
     """API endpoint that allows existing Clients to be viewed."""
     queryset = Client.objects.filter(existing=True).order_by('date_updated')
     serializer_class = ClientSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsSales]
     # post method removed: Potential clients are converted into
     # existing clients as soon as a contract is created automatically.
     http_method_names = ['get', 'put', 'patch', 'delete', 'head', 'options',
