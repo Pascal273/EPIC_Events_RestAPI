@@ -29,7 +29,9 @@ class ClientSerializer(serializers.ModelSerializer):
 class ContractSerializer(serializers.ModelSerializer):
     """Contract model serializer"""
     client = serializers.HyperlinkedRelatedField(
-        view_name='existing_clients-detail', queryset=Client.objects.all())
+        view_name='existing_clients-detail',
+        queryset=Client.objects.all()
+    )
 
     def create(self, validated_data):
         """Modified create method to convert the related client as 'existing'

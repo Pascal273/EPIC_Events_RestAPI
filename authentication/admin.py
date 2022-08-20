@@ -33,16 +33,17 @@ class EmployeeUserAdmin(UserAdmin):
 
     list_display = ('email', 'first_name', 'last_name', 'is_staff')
     fieldsets = (
-        ('Personal info', {
+        ('Personal Information', {
             'fields': ('first_name', 'last_name', 'email', 'password', 'phone',
                        'mobile', 'hire_date', 'birth_date')}),
-        ('Important dates', {
-            'fields': ('last_login', 'date_joined')}),
+        ('Other Dates', {
+            'fields': ('last_login', 'joined')}),
         ('Permissions', {'fields': (
             'is_active', 'is_staff', 'is_superuser',
             # 'groups', 'user_permissions'
         )}),
     )
+    readonly_fields = ['is_staff', 'is_superuser']
     add_fieldsets = (
         ('Personal info', {'fields': (
             'first_name', 'last_name', 'email', 'phone', 'birth_date',

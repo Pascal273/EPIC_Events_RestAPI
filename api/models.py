@@ -58,7 +58,7 @@ class Event(models.Model):
         ('CANCELLED', 'CANCELLED')
     )
 
-    name = models.CharField(max_length=50, null=True)
+    event_name = models.CharField(max_length=50, null=True)
     contract = models.OneToOneField(to=Contract,  # only one event per contract
                                     on_delete=models.CASCADE,
                                     related_name='contract')
@@ -69,8 +69,14 @@ class Event(models.Model):
         to=User, on_delete=models.SET_NULL, null=True)
     status = models.CharField(max_length=10, choices=STATUS_OPTIONS)
     attendees = models.IntegerField()
-    event_date = models.DateTimeField(null=True)
+    event_date_time = models.DateTimeField(null=True)
     notes = models.CharField(max_length=255, null=True)
 
     def __str__(self):
-        return self.name
+        date = self.event_date_time.strftime("%m-%d-&Y, %H:%M")
+        return f'{self.event_name} - {date}'
+
+    def save(self, *args, **kwargs):
+        contract = self.contract
+        self.client = contract.client
+        super(Event, self).save(*args, **kwargs)
