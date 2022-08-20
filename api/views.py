@@ -2,7 +2,7 @@ from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 
-from authentication.permissions import *
+from authentication.permissions import IsManagement
 from .serializers import *
 
 
@@ -17,7 +17,7 @@ class ExistingClientViewSet(viewsets.ModelViewSet):
     """API endpoint that allows existing Clients to be viewed."""
     queryset = Client.objects.filter(existing=True).order_by('date_updated')
     serializer_class = ClientSerializer
-    permission_classes = [permissions.IsAuthenticated, IsSales]
+    permission_classes = [permissions.IsAuthenticated]
     # post method removed: Potential clients are converted into
     # existing clients as soon as a contract is created automatically.
     http_method_names = ['get', 'put', 'patch', 'delete', 'head', 'options',

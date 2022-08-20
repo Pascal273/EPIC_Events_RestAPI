@@ -5,11 +5,11 @@ from rest_framework.exceptions import NotFound
 from .serializers import *
 
 
-class EmployeeViewSet(viewsets.ReadOnlyModelViewSet):
-    """API endpoint that allows Employees to be viewed."""
+class UserViewSet(viewsets.ModelViewSet):
+    """API endpoint that allows Users to be viewed."""
 
-    queryset = Employee.objects.all().order_by('hire_date')
-    serializer_class = EmployeeSerializer
+    queryset = User.objects.all().order_by('-hire_date')
+    serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 

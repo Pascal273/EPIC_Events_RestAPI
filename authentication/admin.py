@@ -4,15 +4,6 @@ from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from .models import *
 
 
-class EmployeeInline(admin.StackedInline):
-    """Custom InLine Model to integrate Employee-info
-    into User-Admin page"""
-    model = Employee
-    can_delete = False
-    verbose_name_plural = 'Employees'
-    max_num = 1
-
-
 class TeamMembershipInline(admin.StackedInline):
     """Custom Inline Model to integrate the team membership
      into the User-Admin page"""
@@ -36,28 +27,39 @@ class TeamMembershipInline(admin.StackedInline):
 
 class EmployeeUserAdmin(UserAdmin):
     """Custom UserAdmin page"""
-    inlines = (TeamMembershipInline, EmployeeInline,)
+    inlines = (TeamMembershipInline, )
     ordering = ('email', )
     exclude = ('username',)
 
     list_display = ('email', 'first_name', 'last_name', 'is_staff')
     fieldsets = (
         ('Personal info', {
-            'fields': ('first_name', 'last_name', 'email', 'password')}),
+            'fields': ('first_name', 'last_name', 'email', 'password', 'phone',
+                       'mobile', 'hire_date', 'birth_date')}),
         ('Important dates', {
             'fields': ('last_login', 'date_joined')}),
-        # ('Permissions', {'fields': (
-        # 'is_active', 'is_staff', 'is_superuser', 'groups',
-        # 'user_permissions')}),
+        ('Permissions', {'fields': (
+            'is_active', 'is_staff', 'is_superuser',
+            # 'groups', 'user_permissions'
+        )}),
     )
     add_fieldsets = (
         ('Personal info', {'fields': (
-            'first_name', 'last_name', 'email', 'password1', 'password2')}),
+            'first_name', 'last_name', 'email', 'phone', 'birth_date',
+            'password1', 'password2')}),
     )
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         kwargs['labels'] = {'groups': 'Teams'}
         return super().get_form(request, obj, change=change, **kwargs)
+
+
+# @admin.register(TeamMembership)
+# class TeamMemberAdmin(admin.ModelAdmin):
+#
+#     def get_form(self, request, obj=None, change=False, **kwargs):
+#         print(obj, change, kwargs)
+#         return super().get_form(request, obj, change=change, **kwargs)
 
 
 admin.site.register(User, EmployeeUserAdmin)

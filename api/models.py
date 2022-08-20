@@ -3,7 +3,7 @@ from .validators import validate_date_not_in_past
 from django.db import models
 from django.contrib.auth import get_user_model
 
-from authentication.models import Employee
+User = get_user_model()
 
 
 class Client(models.Model):
@@ -17,7 +17,7 @@ class Client(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     sales_contact = models.ForeignKey(
-        to=Employee, on_delete=models.SET_NULL, null=True)
+        to=User, on_delete=models.SET_NULL, null=True)
     existing = models.BooleanField(default=False)
 
     def __str__(self):
@@ -66,7 +66,7 @@ class Event(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     support_contact = models.ForeignKey(
-        to=Employee, on_delete=models.SET_NULL, null=True)
+        to=User, on_delete=models.SET_NULL, null=True)
     status = models.CharField(max_length=10, choices=STATUS_OPTIONS)
     attendees = models.IntegerField()
     event_date = models.DateTimeField(null=True)

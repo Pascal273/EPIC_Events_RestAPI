@@ -1,8 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
-from authentication.serializers import NestedEmployeeSerializer
-from authentication.models import Employee, TeamMembership
+from authentication.models import TeamMembership
 
 from api.models import *
 
@@ -11,13 +10,11 @@ User = get_user_model()
 
 
 class ClientSerializer(serializers.ModelSerializer):
+    """Client models serializer"""
     sales_contact = serializers.HyperlinkedRelatedField(
-        view_name='employees-detail',
-        queryset=Employee.objects.filter(
-            user__in=[
-                member.employee for member in TeamMembership.objects.filter(
-                    team__name='Sales'
-                )]
+        view_name='users-detail',
+        queryset=User.objects.filter(
+            groups__name='Sales'
         )
     )
 
@@ -30,6 +27,7 @@ class ClientSerializer(serializers.ModelSerializer):
 
 
 class ContractSerializer(serializers.ModelSerializer):
+    """Contract model serializer"""
     client = serializers.HyperlinkedRelatedField(
         view_name='existing_clients-detail', queryset=Client.objects.all())
 
@@ -53,12 +51,10 @@ class ContractSerializer(serializers.ModelSerializer):
 
 class EventSerializer(serializers.ModelSerializer):
     support_contact = serializers.HyperlinkedRelatedField(
-        view_name='employees-detail',
-        queryset=Employee.objects.filter(user__in=[
-            member.employee for member in TeamMembership.objects.filter(
-                team__name='Support'
-            )
-        ])
+        view_name='users-detail',
+        queryset=User.objects.filter(
+            groups__name='Support'
+        )
     )
     contract = serializers.HyperlinkedRelatedField(
         view_name='contracts-detail',

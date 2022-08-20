@@ -5,7 +5,7 @@ from authentication import views
 
 router = DefaultRouter()
 
-router.register(r'employees', views.EmployeeViewSet, basename='employees')
+router.register(r'users', views.UserViewSet, basename='users')
 router.register(
     r'team_members', views.TeamMembershipViewSet, basename='team_members')
 router.register(r'teams', views.TeamViewSet, basename='teams')
