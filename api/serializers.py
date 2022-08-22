@@ -58,12 +58,11 @@ class EventSerializer(serializers.ModelSerializer):
             groups__name='Support'
         )
     )
+
     contract = serializers.HyperlinkedRelatedField(
         view_name='contracts-detail',
-        queryset=Contract.objects.all().exclude(
-            contract__in=[
-                event.contract.id for event in Event.objects.all()
-            ]
+        queryset=Contract.objects.filter(
+            id__in=Event.objects.all().values_list('contract__id', flat=True)
         )
     )
 

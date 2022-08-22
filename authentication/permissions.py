@@ -49,3 +49,13 @@ class IsSupport(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return True
+
+
+class IsNotAuthenticated(permissions.BasePermission):
+    """
+    Custom permission that returns True if the user is not authenticated.
+    """
+    def has_permission(self, request, view):
+        if request.user.is_authenticated:
+            return False
+        return True

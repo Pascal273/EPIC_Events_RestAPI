@@ -18,10 +18,12 @@ from django.urls import path, include
 
 import api.urls
 import authentication.urls
+from authentication.views import signup
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(api.urls)),
     path('auth/', include(authentication.urls)),
-    path('', include('rest_framework.urls'))
+    path('', include('rest_framework.urls')),
+    path('signup/', signup, name='signup')
 ]

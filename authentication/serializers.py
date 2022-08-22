@@ -27,6 +27,24 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ['is_staff', 'is_superuser', 'team']
 
 
+class SignUpSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['email', 'first_name', 'last_name', 'password',
+                  'phone', 'mobile', 'birth_date']
+        extra_kwargs = {'password': {'style': {'input_type': 'password'}}}
+
+    def create(self, validated_data):
+        user = get_user_model()
+        user.objects.create_user(
+            email=validated_data['email'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
+            password=validated_data['password'],
+        )
+
+
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
@@ -43,9 +61,9 @@ class TeamMembershipSerializer(serializers.ModelSerializer):
         slug_field='email',
         # only show users that aren't members of any team already
         queryset=User.objects.all().exclude(
-            user__in=[
-                member for member in TeamMembership.objects.all()
-            ]
+            user__in=TeamMembership.objects.all().values_list(
+                'user', flat=True
+            )
         ),
     )
 

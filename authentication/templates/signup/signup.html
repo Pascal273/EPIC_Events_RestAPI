@@ -1,0 +1,32 @@
+{% extends "rest_framework/base.html" %}
+
+{% block style %}
+    {{ block.super }}
+{% endblock %}
+
+{% block title %}
+Signup
+{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block body %}
+    {% block navbar %}
+        {{ block.super }}
+    {% endblock %}
+    <div class="signUp" style="margin:200px 400px">
+        <h1>Sign Up</h1>
+        <form method="POST" class="form-group">
+            {% csrf_token %}
+            {{form|crispy}}
+            <div class="signUp-buttons">
+              <a class="btn btn-secondary" href="/" role="button">Go Back</a>
+              <button type="submit" class="btn btn-success">Sign Up</button>
+            </div>
+        </form>
+        <p>
+            Note:After signing up, your manager has to confirm your
+            identity and activate your account before you are able to Log In.
+        </p>
+    </div>
+{% endblock %}

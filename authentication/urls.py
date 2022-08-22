@@ -11,5 +11,7 @@ router.register(
 router.register(r'teams', views.TeamViewSet, basename='teams')
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path('request_signup/', views.UserSignUpView.as_view(),
+         name='request_signup'),
 ]
