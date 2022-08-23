@@ -10,6 +10,8 @@
 {% endblock %}
 
 {% block userlinks %}
-    <li><a href="{% url 'signup' %}">Sign Up</a></li>
+    {% if not request.user.is_authenticated %}
+        <li><a href="{% url 'signup' %}">Sign Up</a></li>
+    {% endif %}
     {{ block.super }}
 {% endblock %}

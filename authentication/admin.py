@@ -28,10 +28,11 @@ class TeamMembershipInline(admin.StackedInline):
 class EmployeeUserAdmin(UserAdmin):
     """Custom UserAdmin page"""
     inlines = (TeamMembershipInline, )
-    ordering = ('email', )
+    ordering = ('email', 'first_name', 'last_name', 'is_staff', 'is_active')
     exclude = ('username',)
 
-    list_display = ('email', 'first_name', 'last_name', 'is_staff')
+    list_display = ('email', 'first_name', 'last_name',
+                    'is_staff', 'is_active')
     fieldsets = (
         ('Personal Information', {
             'fields': ('first_name', 'last_name', 'email', 'password', 'phone',

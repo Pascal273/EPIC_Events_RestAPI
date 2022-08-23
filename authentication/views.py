@@ -47,8 +47,7 @@ class UserSignUpView(GenericAPIView):
         if serializer.is_valid():
             try:
                 user = get_user_model()
-                validate_password(serializer.data['password1'], user)
-                validate_password(serializer.data['password2'], user)
+                validate_password(serializer.data['password'], user)
             except ValidationError as error:
                 return Response(str(error), status=status.HTTP_400_BAD_REQUEST)
 
@@ -60,7 +59,11 @@ class UserSignUpView(GenericAPIView):
 
 
 def signup(request):
-    """The view for the Sign Up page."""
+    """The view for the sign-up page."""
+    # allow only unauthenticated user to visit the signup page
+    if request.user.is_authenticated:
+        return redirect('/')
+
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():

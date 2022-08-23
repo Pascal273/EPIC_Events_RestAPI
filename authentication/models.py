@@ -107,10 +107,14 @@ class TeamMembership(models.Model):
         """
         self.user.groups.clear()
         self.user.groups.add(self.team)
+        # user is active when added to a team.
+        self.user.is_active = True
+        # management team members are staff and superusers.
         if self.user.groups.first().name == 'Management':
             self.user.is_staff = True
             self.user.is_superuser = True
             self.user.save()
+        # members of other teams are not staff nor superusers.
         if self.user.groups.first().name != 'Management':
             self.user.is_staff = False
             self.user.is_superuser = False
