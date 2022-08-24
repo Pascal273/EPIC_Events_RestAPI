@@ -1,43 +1,50 @@
 from rest_framework import permissions
 from rest_framework.exceptions import NotFound
+from django.contrib.auth import get_user_model
 
-# from .models import TeamMembership
+from .models import TeamMembership
+
+
+User = get_user_model()
+management_members = User.objects.filter(groups__name='Management')
+sales_members = User.objects.filter(groups__name='Sales')
+support_members = User.objects.filter(groups__name='Support')
+
+
+class TeamPermissions(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+
+        return False
+
+    def has_object_permission(self, request, view, obj):
+        return False
 
 
 class IsManagement(permissions.BasePermission):
     """Custom Permission that defines what members of the Management team
     are allowed to do"""
-    # management_members = [
-    #     member.employee for member in TeamMembership.objects.filter(
-    #         team__name='Management'
-    #     )
-    # ]
 
     def has_permission(self, request, view):
-        # if request.user in self.management_members:
-        #     return True
+
         return False
 
     def has_object_permission(self, request, view, obj):
-        # if request.user in self.management_members:
-        #     return True
+
         return False
 
 
 class IsSales(permissions.BasePermission):
     """Custom Permission that defines what members of the Sales team
         are allowed to do"""
-    # sales_members = [
-    #     member.employee for member in TeamMembership.objects.filter(
-    #         team__name='Sales'
-    #     )
-    # ]
 
     def has_permission(self, request, view):
-        return True
+
+        return False
 
     def has_object_permission(self, request, view, obj):
-        return True
+
+        return False
 
 
 class IsSupport(permissions.BasePermission):
@@ -45,10 +52,12 @@ class IsSupport(permissions.BasePermission):
         are allowed to do"""
 
     def has_permission(self, request, view):
-        return True
+
+        return False
 
     def has_object_permission(self, request, view, obj):
-        return True
+
+        return False
 
 
 class IsNotAuthenticated(permissions.BasePermission):

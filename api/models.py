@@ -27,6 +27,7 @@ class Client(models.Model):
 class Contract(models.Model):
     """The model for Contracts"""
     STATUS_OPTIONS = (
+        ('OPEN', 'OPEN'),
         ('SIGNED', 'SIGNED'),
         ('APPROVED', 'APPROVED'),
         ('CLOSED', 'CLOSED'),

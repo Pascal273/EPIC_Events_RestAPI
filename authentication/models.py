@@ -102,21 +102,25 @@ class TeamMembership(models.Model):
 
     def save(self, *args, **kwargs):
         """
-        Custom Save-Method to update User.groups, staff status
-        and superuser status automatically.
+        Custom Save-Method to update User_groups, staff status,
+        superuser status and user_permissions automatically.
         """
-        self.user.groups.clear()
-        self.user.groups.add(self.team)
+        user = self.user
+        team = self.team
+        # set group
+        user.groups.set([team])
         # user is active when added to a team.
-        self.user.is_active = True
+        user.is_active = True
+        # set team permissions to the user permissions.
+        team_permissions = team.permissions.all()
+        user.user_permissions.set(team_permissions)
         # management team members are staff and superusers.
-        if self.user.groups.first().name == 'Management':
-            self.user.is_staff = True
-            self.user.is_superuser = True
-            self.user.save()
+        if user.groups.first().name == 'Management':
+            user.is_staff = True
+            user.is_superuser = True
         # members of other teams are not staff nor superusers.
-        if self.user.groups.first().name != 'Management':
-            self.user.is_staff = False
-            self.user.is_superuser = False
-            self.user.save()
+        if user.groups.first().name != 'Management':
+            user.is_staff = False
+            user.is_superuser = False
+        user.save()
         super(TeamMembership, self).save(*args, **kwargs)
