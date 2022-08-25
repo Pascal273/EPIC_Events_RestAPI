@@ -1,83 +1,77 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
-from authentication.models import TeamMembership
-
-from api.models import *
+from api.models import Client, Contract, Event
+from .validators import *
 
 
 User = get_user_model()
 
 
-class ClientSerializer(serializers.ModelSerializer):
-    """Client models serializer"""
+class ClientSerializer(serializers.HyperlinkedModelSerializer):
+    """Client model serializer"""
+
+    date_created = serializers.DateTimeField(
+        format="%Y-%m-%d %H:%M:%S", read_only=True)
+    date_updated = serializers.DateTimeField(
+        format="%Y-%m-%d %H:%M:%S", read_only=True)
     sales_contact = serializers.HyperlinkedRelatedField(
-        view_name='users-detail',
-        queryset=User.objects.filter(
-            groups__name='Sales'
-        )
+        view_name='user-detail',
+        queryset=User.objects.filter(groups__name='Sales'),
+        default=serializers.CurrentUserDefault()
     )
 
     class Meta:
         model = Client
-        fields = ['first_name', 'last_name', 'email', 'phone',
+        fields = ['id', 'url', 'first_name', 'last_name', 'email', 'phone',
                   'mobile', 'company_name', 'date_created', 'date_updated',
                   'sales_contact', 'existing']
         read_only_fields = ['existing', ]
 
 
-class ContractSerializer(serializers.ModelSerializer):
+class ContractSerializer(serializers.HyperlinkedModelSerializer):
     """Contract model serializer"""
-    client = serializers.HyperlinkedRelatedField(
-        view_name='existing_clients-detail',
-        queryset=Client.objects.all()
+
+    payment_due = serializers.DateField(
+        format="%Y-%m-%d",
+        validators=[validate_date_not_in_past]
     )
-
-    def create(self, validated_data):
-        """Modified create method to convert the related client as 'existing'
-        once a contract is created."""
-
-        # update client to 'existing' if contract status allows it
-        if validated_data['status'] not in ['CLOSED', 'CANCELLED', 'EXPIRED']:
-            client = Client.objects.get(id=validated_data['client'].id)
-            client.existing = True
-            client.save()
-
-        contract = Contract.objects.create(**validated_data)
-        return contract
+    date_created = serializers.DateTimeField(
+        format="%Y-%m-%d %H:%M:%S", read_only=True)
+    date_updated = serializers.DateTimeField(
+        format="%Y-%m-%d %H:%M:%S", read_only=True)
 
     class Meta:
         model = Contract
-        fields = '__all__'
+        fields = ['id', 'url', 'client', 'status', 'amount', 'payment_due',
+                  'date_created', 'date_updated']
 
 
-class EventSerializer(serializers.ModelSerializer):
+class EventSerializer(serializers.HyperlinkedModelSerializer):
+    """Event model serializer"""
+
+    date_created = serializers.DateTimeField(
+        format="%Y-%m-%d %H:%M:%S", read_only=True)
+    date_updated = serializers.DateTimeField(
+        format="%Y-%m-%d %H:%M:%S", read_only=True)
+    event_date_time = serializers.DateTimeField(
+        format="%Y-%m-%d %H:%M:%S",
+        validators=[validate_date_time_not_in_past]
+    )
     support_contact = serializers.HyperlinkedRelatedField(
-        view_name='users-detail',
-        queryset=User.objects.filter(
-            groups__name='Support'
-        )
+        view_name='user-detail',
+        queryset=User.objects.filter(groups__name='Support'),
+        required=True
     )
-
     contract = serializers.HyperlinkedRelatedField(
-        view_name='contracts-detail',
-        queryset=Contract.objects.filter(
-            id__in=Event.objects.all().values_list('contract__id', flat=True)
-        )
+        view_name='contract-detail',
+        queryset=Contract.objects.filter(status__in=['SIGNED', 'APPROVED']),
+        required=True
     )
-
-    def create(self, validated_data):
-        """Modifies create method to add the client from the associated
-        contract automatically"""
-
-        contract = Contract.objects.get(id=validated_data['contract'].id)
-        client = contract.client
-        validated_data['client'] = client
-
-        event = Event.objects.create(**validated_data)
-        return event
 
     class Meta:
         model = Event
-        fields = '__all__'
+        fields = ['id', 'url', 'support_contact', 'contract', 'event_name',
+                  'date_created', 'date_updated', 'status', 'attendees',
+                  'event_date_time', 'notes', 'client']
         read_only_fields = ['client', ]

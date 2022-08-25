@@ -41,10 +41,11 @@ class EmployeeUserAdmin(UserAdmin):
             'fields': ('last_login', 'joined')}),
         ('Permissions', {'fields': (
             'is_active', 'is_staff', 'is_superuser',
-            # 'groups', 'user_permissions'
+            # 'groups',
+            'user_permissions'
         )}),
     )
-    readonly_fields = ['is_staff', 'is_superuser']
+    readonly_fields = ['is_staff', 'is_superuser', 'user_permissions']
     add_fieldsets = (
         ('Personal info', {'fields': (
             'first_name', 'last_name', 'email', 'phone', 'birth_date',

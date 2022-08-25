@@ -17,7 +17,10 @@ class UserViewSet(viewsets.ModelViewSet):
 
     queryset = User.objects.all().order_by('-hire_date')
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [
+        permissions.IsAuthenticated,
+        permissions.DjangoModelPermissions
+    ]
 
 
 class TeamMembershipViewSet(viewsets.ModelViewSet):
@@ -25,7 +28,10 @@ class TeamMembershipViewSet(viewsets.ModelViewSet):
 
     queryset = TeamMembership.objects.all().order_by('team')
     serializer_class = TeamMembershipSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [
+        permissions.IsAuthenticated,
+        permissions.DjangoModelPermissions
+    ]
 
 
 class TeamViewSet(viewsets.ModelViewSet):
@@ -33,7 +39,10 @@ class TeamViewSet(viewsets.ModelViewSet):
 
     queryset = Team.objects.all().order_by('name')
     serializer_class = TeamSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [
+        permissions.IsAuthenticated,
+        permissions.DjangoModelPermissions
+    ]
 
 
 class UserSignUpView(GenericAPIView):

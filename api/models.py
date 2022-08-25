@@ -1,6 +1,7 @@
 from .validators import validate_date_not_in_past
 
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -43,6 +44,29 @@ class Contract(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_due = models.DateField(validators=[validate_date_not_in_past])
 
+    def save(self, *args, **kwargs):
+        """
+        Modified save method to convert the related client as
+        'existing' or 'potential' clients depending on the contract's status.
+        """
+        not_active = ['OPEN', 'CLOSED', 'CANCELLED', 'EXPIRED']
+        active = ['SIGNED', 'APPROVED']
+        client = self.client
+        # contract active -> client 'existing'
+        if self.status not in not_active:
+            client.existing = True
+            client.save()
+
+        # contract not active -> client not 'existing'
+        active_contracts = Contract.objects.filter(
+            Q(client=client) & Q(status__in=active)
+        ).exists()
+        if self.status in not_active and not active_contracts:
+            client.existing = False
+            client.save()
+
+        super(Contract, self).save(*args, **kwargs)
+
     def __str__(self):
         datetime_obj = self.date_created
         datetime_str = datetime_obj.strftime("%m.%d.%Y, %H:%M")
@@ -78,6 +102,15 @@ class Event(models.Model):
         return f'{self.event_name} - {date}'
 
     def save(self, *args, **kwargs):
+        """
+        custom method to:
+        - add client from related contract automatically
+        - change contract status to approved if an event is created
+        """
+
         contract = self.contract
         self.client = contract.client
+        if contract.status == 'SIGNED':
+            contract.status = 'APPROVED'
+            contract.save()
         super(Event, self).save(*args, **kwargs)
