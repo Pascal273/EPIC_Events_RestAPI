@@ -8,7 +8,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
 from .serializers import *
-from .permissions import IsNotAuthenticated
+from .permissions import IsNotAuthenticated, IsManagement
 from .forms import SignUpForm
 
 
@@ -19,7 +19,8 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [
         permissions.IsAuthenticated,
-        permissions.DjangoModelPermissions
+        permissions.DjangoModelPermissions,
+        IsManagement
     ]
 
 
@@ -30,7 +31,8 @@ class TeamMembershipViewSet(viewsets.ModelViewSet):
     serializer_class = TeamMembershipSerializer
     permission_classes = [
         permissions.IsAuthenticated,
-        permissions.DjangoModelPermissions
+        permissions.DjangoModelPermissions,
+        IsManagement
     ]
 
 
@@ -41,7 +43,8 @@ class TeamViewSet(viewsets.ModelViewSet):
     serializer_class = TeamSerializer
     permission_classes = [
         permissions.IsAuthenticated,
-        permissions.DjangoModelPermissions
+        permissions.DjangoModelPermissions,
+        IsManagement
     ]
 
 

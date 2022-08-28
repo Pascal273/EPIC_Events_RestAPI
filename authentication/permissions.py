@@ -12,10 +12,11 @@ support_members = User.objects.filter(groups__name='Support')
 
 
 class IsManagement(permissions.BasePermission):
-    """Custom Permission that defines what members of the Management team
-    are allowed to do"""
+    """
+    Custom Permission that only allows access to members of the Management team
+    """
 
-    def has_object_permission(self, request, view, obj):
+    def has_permission(self, request, view):
         if request.user in management_members:
             return True
         return False
