@@ -1,7 +1,8 @@
 from django.contrib.auth.models import \
     AbstractBaseUser, BaseUserManager, Group, Permission, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils import timezone
 
 from django.db import models
@@ -78,6 +79,14 @@ class Team(Group):
 
     def __str__(self):
         return self.name
+
+
+# TODO save changes on team permissions on user permissions!
+# @receiver(post_save, sender=Team)
+# def post_save_permissions(sender, instance, created, **kwargs):
+#     if not created:
+#         print(instance.permissions.all())
+#         print(kwargs)
 
 
 class TeamMembership(models.Model):

@@ -11,10 +11,10 @@ class Client(models.Model):
     """ The Model for Clients"""
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
-    email = models.CharField(max_length=30, unique=True)
-    phone = models.CharField(max_length=30, null=True)
-    mobile = models.CharField(max_length=30, null=True)
-    company_name = models.CharField(max_length=50)
+    email = models.CharField(max_length=50, unique=True)
+    phone = models.CharField(max_length=50, null=True)
+    mobile = models.CharField(max_length=50, null=True)
+    company_name = models.CharField(max_length=100)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     sales_contact = models.ForeignKey(
@@ -94,11 +94,11 @@ class Event(models.Model):
         to=User, on_delete=models.SET_NULL, null=True)
     status = models.CharField(max_length=10, choices=STATUS_OPTIONS)
     attendees = models.IntegerField()
-    event_date_time = models.DateTimeField(null=True)
+    event_date = models.DateField(null=True)
     notes = models.CharField(max_length=255, null=True)
 
     def __str__(self):
-        date = self.event_date_time.strftime("%m-%d-&Y, %H:%M")
+        date = self.event_date.strftime("%m-%d-&Y, %H:%M")
         return f'{self.event_name} - {date}'
 
     def save(self, *args, **kwargs):

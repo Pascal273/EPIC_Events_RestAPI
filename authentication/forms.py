@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 class SignUpForm(UserCreationForm):
     email = forms.CharField(
         max_length=30, label="",
-        widget=forms.EmailInput(attrs={"placeholder": "Username"}),
+        widget=forms.EmailInput(attrs={"placeholder": "Email"}),
         required=True,
     )
     first_name = forms.CharField(

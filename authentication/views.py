@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, status, filters
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import GenericAPIView
@@ -22,6 +22,8 @@ class UserViewSet(viewsets.ModelViewSet):
         permissions.DjangoModelPermissions,
         IsManagement
     ]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['first_name', 'last_name', 'email']
 
 
 class TeamMembershipViewSet(viewsets.ModelViewSet):
@@ -34,6 +36,8 @@ class TeamMembershipViewSet(viewsets.ModelViewSet):
         permissions.DjangoModelPermissions,
         IsManagement
     ]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['user', 'team']
 
 
 class TeamViewSet(viewsets.ModelViewSet):
@@ -46,6 +50,8 @@ class TeamViewSet(viewsets.ModelViewSet):
         permissions.DjangoModelPermissions,
         IsManagement
     ]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
 
 
 class UserSignUpView(GenericAPIView):

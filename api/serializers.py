@@ -40,6 +40,10 @@ class ContractSerializer(serializers.HyperlinkedModelSerializer):
         format="%Y-%m-%d %H:%M:%S", read_only=True)
     date_updated = serializers.DateTimeField(
         format="%Y-%m-%d %H:%M:%S", read_only=True)
+    client = serializers.HyperlinkedRelatedField(
+        view_name='client-detail',
+        queryset=Client.objects.all().order_by('first_name')
+    )
 
     class Meta:
         model = Contract
@@ -54,9 +58,9 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
         format="%Y-%m-%d %H:%M:%S", read_only=True)
     date_updated = serializers.DateTimeField(
         format="%Y-%m-%d %H:%M:%S", read_only=True)
-    event_date_time = serializers.DateTimeField(
-        format="%Y-%m-%d %H:%M:%S",
-        validators=[validate_date_time_not_in_past]
+    event_date = serializers.DateField(
+        format="%Y-%m-%d",
+        validators=[validate_date_not_in_past]
     )
     support_contact = serializers.HyperlinkedRelatedField(
         view_name='user-detail',
@@ -73,5 +77,5 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
         model = Event
         fields = ['id', 'url', 'support_contact', 'contract', 'event_name',
                   'date_created', 'date_updated', 'status', 'attendees',
-                  'event_date_time', 'notes', 'client']
+                  'event_date', 'notes', 'client']
         read_only_fields = ['client', ]

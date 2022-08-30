@@ -1,10 +1,14 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, filters
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
-from rest_framework import filters
 
-from authentication.permissions import *
+# '^' Starts-with search. (example: '^first_name')
+# '=' Exact matches.
+# '@' Full-text search. (Currently only supported Django's PostgreSQL backend.)
+# '$' Regex search.
+
+from authentication.permissions import IsSupport, IsSales
 from .serializers import *
 
 
@@ -18,6 +22,7 @@ class ClientViewSet(viewsets.ModelViewSet):
         IsSupport
     ]
     filter_backends = [filters.SearchFilter]
+    search_fields = ['first_name', 'last_name', 'email']
 
 
 class PotentialClientViewSet(viewsets.ModelViewSet):
@@ -30,6 +35,7 @@ class PotentialClientViewSet(viewsets.ModelViewSet):
         IsSupport
     ]
     filter_backends = [filters.SearchFilter]
+    search_fields = ['first_name', 'last_name', 'email']
 
 
 class ExistingClientViewSet(viewsets.ModelViewSet):
@@ -46,6 +52,7 @@ class ExistingClientViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'put', 'patch', 'delete', 'head', 'options',
                          'trace']
     filter_backends = [filters.SearchFilter]
+    search_fields = ['first_name', 'last_name', 'email']
 
 
 class ContractViewSet(viewsets.ModelViewSet):
@@ -60,6 +67,12 @@ class ContractViewSet(viewsets.ModelViewSet):
         IsSupport
     ]
     filter_backends = [filters.SearchFilter]
+    search_fields = [
+        'client__first_name',
+        'client__last_name',
+        'date_created',
+        'amount'
+    ]
 
 
 class EventViewSet(viewsets.ModelViewSet):
@@ -73,3 +86,8 @@ class EventViewSet(viewsets.ModelViewSet):
         IsSupport
     ]
     filter_backends = [filters.SearchFilter]
+    search_fields = [
+        'client__first_name',
+        'client__last_name',
+        'event_date'
+    ]

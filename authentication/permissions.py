@@ -55,31 +55,6 @@ class IsSupport(permissions.BasePermission):
     """Custom Permission that defines what members of the Support team
         are allowed to do"""
 
-    def has_permission(self, request, view):
-        user = request.user
-        # support members can:
-        if user in support_members:
-            # not access Contracts
-            if 'Contract' in type(view).__name__:
-                return False
-            # access events only if they are assigned to it
-            if 'Event' in type(view).__name__:
-                # override queryset with filtered by support is user
-                # if Event is not finished
-                not_finished = ['PROCESSING', 'UPCOMING', 'ONGOING']
-                view.queryset = view.queryset.filter(
-                    support_contact=user, status__in=not_finished
-                )
-            # access Clients if they belong to the assigned event
-            if 'Client' in type(view).__name__:
-                rel_events = Event.objects.filter(
-                    support_contact=user
-                )
-                # override queryset to clients of related events
-                view.queryset = view.queryset.filter(event__in=rel_events)
-
-        return True
-
     def has_object_permission(self, request, view, obj):
         user = request.user
         method = request.method
@@ -87,9 +62,12 @@ class IsSupport(permissions.BasePermission):
         if user in support_members:
             # Events
             if type(obj).__name__ == 'Event':
+                # view any event
+                if request.method in permissions.SAFE_METHODS:
+                    return True
                 # on assigned Events
                 if obj.support_contact.id == user.id:
-                    # view event
+                    # view any event
                     if not request.data:
                         return True
                     # update event (except: contract-field)

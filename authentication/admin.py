@@ -57,16 +57,11 @@ class EmployeeUserAdmin(UserAdmin):
         return super().get_form(request, obj, change=change, **kwargs)
 
 
-# @admin.register(TeamMembership)
-# class TeamMemberAdmin(admin.ModelAdmin):
-#
-#     def get_form(self, request, obj=None, change=False, **kwargs):
-#         print(obj, change, kwargs)
-#         return super().get_form(request, obj, change=change, **kwargs)
-
-
 admin.site.register(User, EmployeeUserAdmin)
 
 admin.site.unregister(Group)
 admin.site.register(Team, GroupAdmin)
 admin.site.register(TeamMembership)
+
+# custom changes to admin page:
+admin.site.site_header = 'Epic-Events administration'

@@ -41,6 +41,7 @@ def create_default_user_and_user(apps, schema_migration):
     # create support team and set permissions
     support_permissions = [
         view_client,
+        view_contract,
         change_event,
         view_event,
     ]
