@@ -29,7 +29,7 @@ class ClientSerializer(serializers.HyperlinkedModelSerializer):
         read_only_fields = ['existing', ]
 
 
-class ContractSerializer(serializers.HyperlinkedModelSerializer):
+class ContractSerializer(serializers.ModelSerializer):
     """Contract model serializer"""
 
     payment_due = serializers.DateField(
@@ -40,18 +40,19 @@ class ContractSerializer(serializers.HyperlinkedModelSerializer):
         format="%Y-%m-%d %H:%M:%S", read_only=True)
     date_updated = serializers.DateTimeField(
         format="%Y-%m-%d %H:%M:%S", read_only=True)
-    client = serializers.HyperlinkedRelatedField(
+    client_url = serializers.HyperlinkedRelatedField(
         view_name='client-detail',
-        queryset=Client.objects.all().order_by('first_name')
+        source='client',
+        read_only=True
     )
 
     class Meta:
         model = Contract
-        fields = ['id', 'url', 'client', 'status', 'amount', 'payment_due',
-                  'date_created', 'date_updated']
+        fields = ['id', 'url', 'client', 'client_url', 'status', 'amount',
+                  'payment_due', 'date_created', 'date_updated']
 
 
-class EventSerializer(serializers.HyperlinkedModelSerializer):
+class EventSerializer(serializers.ModelSerializer):
     """Event model serializer"""
 
     date_created = serializers.DateTimeField(
@@ -62,20 +63,26 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
         format="%Y-%m-%d",
         validators=[validate_date_not_in_past]
     )
-    support_contact = serializers.HyperlinkedRelatedField(
-        view_name='user-detail',
-        queryset=User.objects.filter(groups__name='Support'),
-        required=True
+    client_url = serializers.HyperlinkedRelatedField(
+        view_name='client-detail',
+        source='client',
+        read_only=True
     )
-    contract = serializers.HyperlinkedRelatedField(
+    support_contact_url = serializers.HyperlinkedRelatedField(
+        view_name='user-detail',
+        read_only=True,
+        source='support_contact'
+    )
+    contract_url = serializers.HyperlinkedRelatedField(
         view_name='contract-detail',
-        queryset=Contract.objects.filter(status__in=['SIGNED', 'APPROVED']),
-        required=True
+        read_only=True,
+        source='contract'
     )
 
     class Meta:
         model = Event
-        fields = ['id', 'url', 'support_contact', 'contract', 'event_name',
-                  'date_created', 'date_updated', 'status', 'attendees',
-                  'event_date', 'notes', 'client']
-        read_only_fields = ['client', ]
+        fields = ['id', 'client', 'client_url', 'url', 'support_contact',
+                  'support_contact_url', 'contract', 'contract_url',
+                  'event_name', 'date_created', 'date_updated', 'status',
+                  'attendees', 'event_date', 'notes']
+        read_only_fields = ['client', 'support_contact_url', 'contract_url']
