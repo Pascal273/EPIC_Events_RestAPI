@@ -29,6 +29,7 @@ class IsSales(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         # sales_members can:
         if request.user in sales_members:
+            allowed_status_options = ['OPEN', 'SIGNED']
             # on Contract's
             if type(obj).__name__ == 'Contract':
                 # view Contract
@@ -41,12 +42,18 @@ class IsSales(permissions.BasePermission):
                         return True
                     # post only allow status 'OPEN' or 'SIGNED'
                     if request.method == 'POST':
-                        if request.data['status'] in ['OPEN', 'SIGNED']:
+                        if request.data['status'] in allowed_status_options:
                             return True
                     # update only from status to 'SIGNED'
                     if request.method in ['PUT', 'PATCH']:
-                        if request.data['status'] in ['OPEN', 'SIGNED']:
-                            return True
+                        if 'status' in request.data.keys():
+                            status = request.data['status']
+                            # if status is updated only allow OPEN or SIGNED
+                            if status in allowed_status_options:
+                                return True
+                            else:
+                                return False
+                        return True
                 return False
         return True
 

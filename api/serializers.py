@@ -45,8 +45,9 @@ class ClientListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Client
-        fields = ['id', 'url', 'full_name', 'first_name', 'last_name', 'email', 'phone',
-                  'mobile', 'company_name', 'sales_contact', 'existing']
+        fields = ['id', 'url', 'full_name', 'first_name', 'last_name', 'email',
+                  'phone', 'mobile', 'company_name', 'sales_contact',
+                  'existing']
         read_only_fields = ['existing', ]
         extra_kwargs = {
             'first_name': {'write_only': True},
@@ -86,15 +87,19 @@ class ContractListSerializer(serializers.ModelSerializer):
     )
     date_created = serializers.DateTimeField(
         format="%Y-%m-%d %H:%M:%S", read_only=True)
-    client = serializers.SlugRelatedField(
+    client_ = serializers.SlugRelatedField(
         slug_field='full_name',
-        queryset=Client.objects.all()
+        read_only=True,
+        source='client'
     )
 
     class Meta:
         model = Contract
-        fields = ['id', 'url', 'client', 'status', 'amount',
+        fields = ['id', 'url', 'client_', 'client', 'status', 'amount',
                   'payment_due', 'date_created']
+        extra_kwargs = {
+            'client': {'write_only': True}
+        }
 
 
 class EventDetailSerializer(serializers.ModelSerializer):
@@ -140,10 +145,6 @@ class EventDetailSerializer(serializers.ModelSerializer):
 class EventListSerializer(serializers.ModelSerializer):
     """Event model serializer for list view"""
 
-    date_created = serializers.DateTimeField(
-        format="%Y-%m-%d %H:%M:%S",
-        read_only=True
-    )
     event_date = serializers.DateField(
         format="%Y-%m-%d",
         validators=[validate_date_not_in_past]
@@ -160,8 +161,7 @@ class EventListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ['id', 'url', 'event_name', 'client', 'support_contact',
-                  'contract', 'status', 'attendees', 'event_date',
-                  'date_created', 'notes']
+                  'contract', 'status', 'attendees', 'event_date', 'notes']
         read_only_fields = ['client', 'support_contact_url', 'contract_url']
         extra_kwargs = {
             'attendees': {'write_only': True},
