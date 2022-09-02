@@ -51,8 +51,7 @@ class IsSales(permissions.BasePermission):
                             # if status is updated only allow OPEN or SIGNED
                             if status in allowed_status_options:
                                 return True
-                            else:
-                                return False
+                            return False
                         return True
                 return False
         return True
@@ -79,8 +78,12 @@ class IsSupport(permissions.BasePermission):
                         return True
                     # update event (except: contract-field)
                     if method in ['PUT', 'PATCH']:
-                        if int(request.data['contract'][-2]) == obj.contract.id:
-                            return True
+                        if 'contract' in request.data.keys():
+                            contract_id = int(request.data['contract'][-2])
+                            if contract_id == obj.contract.id:
+                                return True
+                            return False
+                        return True
                 return False
         return True
 
