@@ -5,7 +5,7 @@ The goal is to Develop a Secure Back-End Architecture Using Django ORM.
 # Required Setup to run the program:
 
 1. Python version 3.10.5 or higher must be installed.
-2. A PostgreSQL database has to be available.
+2. A PostgreSQL database must be available.
 3. Create the directory in which you want to keep the program.
 4. Open the the `settings.py`, go to DATABASES and change the informations for
  your database accordingly.
