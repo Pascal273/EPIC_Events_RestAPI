@@ -1,13 +1,13 @@
 # Introduction
 This is the 12th project for the Python path of Openclassrooms.
-The goal is to Develop a Secure Back-End Architecture Using Django ORM.
+The goal is to develop a secure back-end architecture Using Django ORM.
 
 # Required Setup to run the program:
 
 1. Python version 3.10.5 or higher must be installed.
 2. A PostgreSQL database must be available.
 3. Create the directory in which you want to keep the program.
-4. Open the the `settings.py`, go to DATABASES and change the informations for
+4. Open the the `settings.py`, go to DATABASES and change the information for
  your database accordingly.
    Example: 
     ```
@@ -20,11 +20,11 @@ The goal is to Develop a Secure Back-End Architecture Using Django ORM.
 6. Open your terminal.
 7. Navigate to the folder that contains the `manage.py` and `requirements.txt` files
 8. Create your Virtual Environment by running the command: `python -m venv venv`
-9. Activate the Environment by running: 
+9. Activate the environment by running: 
  `venv\Scripts\activate.bat` (Windows) 
  or `venv\Scripts\activate.ps1` (Powershell)
  or `source venv/bin/activate` (OS)
-10. Install the Requirements by running the command: `pip install -r requirements.txt`
+10. Install the requirements by running the command: `pip install -r requirements.txt`
 
 # How to run the program:
 
@@ -40,8 +40,8 @@ The goal is to Develop a Secure Back-End Architecture Using Django ORM.
     -  3. `python manage.py migrate authentication 0002`
 5. Create the first admin-user (superuser):
     - Run `python manage.py createsuperuser`
-    - enter your credentials
-    - you need these to sign in to the Admin-UI once the server is running.
+    - Enter your credentials
+    - You need these to sign in to the Admin-UI once the server is running.
 6. Run the command: `python manage.py runserver` (Windows) or `python3 manage.py runserver`(Mac)
 The default port is 8000. Add the port-number as a parameter to runserver to use a different
 port to run the server. For Example: `python manage.py runserver 9000`
