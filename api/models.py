@@ -57,12 +57,12 @@ class Contract(models.Model):
         not_active = ['OPEN', 'CLOSED', 'CANCELLED', 'EXPIRED']
         active = ['SIGNED', 'APPROVED']
         client = self.client
-        # contract active -> client 'existing'
+        # active contract -> client 'existing'
         if self.status not in not_active:
             client.existing = True
             client.save()
 
-        # contract not active -> client not 'existing'
+        # no active contract -> client not 'existing'
         active_contracts = Contract.objects.filter(
             Q(client=client) & Q(status__in=active)
         ).exists()

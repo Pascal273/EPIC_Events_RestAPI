@@ -93,6 +93,17 @@ class ContractListSerializer(serializers.ModelSerializer):
         source='client'
     )
 
+    def create(self, validated_data):
+        """
+        Create Method altered to save the current sales team member as the
+        sales contact of the client.
+        """
+        client = validated_data['client']
+        user = self.context['request'].user
+        client.sales_contact = user
+        client.save()
+        return Contract.objects.create(**validated_data)
+
     class Meta:
         model = Contract
         fields = ['id', 'url', 'client_', 'client', 'status', 'amount',

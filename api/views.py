@@ -33,8 +33,8 @@ class ClientViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         """Destroy method with response"""
-        project = self.get_object()
-        project.delete()
+        instance = self.get_object()
+        instance.delete()
         return Response({'message': 'Client has been deleted'})
 
     def update(self, request, *args, **kwargs):
@@ -63,8 +63,8 @@ class PotentialClientViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         """Destroy method with response"""
-        project = self.get_object()
-        project.delete()
+        instance = self.get_object()
+        instance.delete()
         return Response({'message': 'Client has been deleted'})
 
     def update(self, request, *args, **kwargs):
@@ -97,8 +97,8 @@ class ExistingClientViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         """Destroy method with response"""
-        project = self.get_object()
-        project.delete()
+        instance = self.get_object()
+        instance.delete()
         return Response({'message': 'Client has been deleted'})
 
     def update(self, request, *args, **kwargs):
@@ -134,8 +134,8 @@ class ContractViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         """Destroy method with response"""
-        project = self.get_object()
-        project.delete()
+        instance = self.get_object()
+        instance.delete()
         return Response({'message': 'Contract has been deleted'})
 
     def update(self, request, *args, **kwargs):
@@ -170,11 +170,18 @@ class EventViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         """Destroy method with response"""
-        project = self.get_object()
-        project.delete()
+        instance = self.get_object()
+        instance.delete()
         return Response({'message': 'Event has been deleted'})
 
     def update(self, request, *args, **kwargs):
-        """Update method that allows partial updates"""
+        """
+        Update method that allows partial updates and returns detailed view
+        """
         kwargs['partial'] = True
-        return super().update(request, *args, **kwargs)
+        super().update(request, *args, **kwargs)
+        instance = self.get_object()
+        serializer = EventDetailSerializer(
+            instance, context={'request': request}
+        )
+        return Response(serializer.data)
