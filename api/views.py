@@ -137,6 +137,7 @@ class ContractViewSet(viewsets.ModelViewSet):
     search_fields = [
         'client__first_name',
         'client__last_name',
+        'client__email',
         'date_created',
         'amount'
     ]
