@@ -12,19 +12,17 @@ class UserSerializer(serializers.ModelSerializer):
     team = serializers.SerializerMethodField()  # -> get_team
 
     def get_team(self, user):
-        team_membership = TeamMembership.objects.filter(user=user).first()
+        team_membership = user.groups.first().name
         if team_membership:
-            return TeamSerializer(
-                team_membership.team, many=False, required=False
-            ).data['name']
+            return team_membership
         return None
 
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'last_name', 'password', 'phone',
-                  'mobile', 'birth_date', 'last_login', 'hire_date',
+        fields = ['email', 'url', 'first_name', 'last_name', 'password',
+                  'phone', 'mobile', 'birth_date', 'last_login', 'hire_date',
                   'joined', 'is_active', 'team']
-        read_only_fields = ['is_staff', 'is_superuser', 'team']
+        read_only_fields = ['is_staff', 'is_superuser']
 
 
 class SignUpSerializer(serializers.ModelSerializer):

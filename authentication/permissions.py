@@ -40,11 +40,11 @@ class IsSales(permissions.BasePermission):
                     # view details
                     if not request.data:
                         return True
-                    # post only allow status 'OPEN' or 'SIGNED'
+                    # post: only allow status 'OPEN' or 'SIGNED'
                     if request.method == 'POST':
                         if request.data['status'] in allowed_status_options:
                             return True
-                    # update only from status to 'SIGNED'
+                    # update status only between 'OPEN' and 'SIGNED'
                     if request.method in ['PUT', 'PATCH']:
                         if 'status' in request.data.keys():
                             status = request.data['status']

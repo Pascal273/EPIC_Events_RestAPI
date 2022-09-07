@@ -3,18 +3,12 @@ from rest_framework import viewsets, permissions, filters, status
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 
-
-# '^' Starts-with search. (example: '^first_name')
-# '=' Exact matches.
-# '@' Full-text search. (Currently only supported Django's PostgreSQL backend.)
-# '$' Regex search.
-
 from authentication.permissions import IsSupport, IsSales
 from .serializers import *
 
 
 class ClientViewSet(viewsets.ModelViewSet):
-    """API endpoint that allows potential Clients to be viewed."""
+    """API endpoint that allows all Clients to be viewed."""
     queryset = Client.objects.all().order_by('date_updated')
     serializer_class = ClientListSerializer
     permission_classes = [
@@ -38,9 +32,16 @@ class ClientViewSet(viewsets.ModelViewSet):
         return Response({'message': 'Client has been deleted'})
 
     def update(self, request, *args, **kwargs):
-        """Update method that allows partial updates"""
+        """
+        Update method that allows partial updates and returns detailed view
+        """
         kwargs['partial'] = True
-        return super().update(request, *args, **kwargs)
+        super().update(request, *args, **kwargs)
+        instance = self.get_object()
+        serializer = ClientDetailSerializer(
+            instance, context={'request': request}
+        )
+        return Response(serializer.data)
 
 
 class PotentialClientViewSet(viewsets.ModelViewSet):
@@ -66,11 +67,6 @@ class PotentialClientViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         instance.delete()
         return Response({'message': 'Client has been deleted'})
-
-    def update(self, request, *args, **kwargs):
-        """Update method that allows partial updates"""
-        kwargs['partial'] = True
-        return super().update(request, *args, **kwargs)
 
 
 class ExistingClientViewSet(viewsets.ModelViewSet):
@@ -100,11 +96,6 @@ class ExistingClientViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         instance.delete()
         return Response({'message': 'Client has been deleted'})
-
-    def update(self, request, *args, **kwargs):
-        """Update method that allows partial updates"""
-        kwargs['partial'] = True
-        return super().update(request, *args, **kwargs)
 
 
 class ContractViewSet(viewsets.ModelViewSet):
@@ -139,9 +130,16 @@ class ContractViewSet(viewsets.ModelViewSet):
         return Response({'message': 'Contract has been deleted'})
 
     def update(self, request, *args, **kwargs):
-        """Update method that allows partial updates"""
+        """
+        Update method that allows partial updates and returns detailed view
+        """
         kwargs['partial'] = True
-        return super().update(request, *args, **kwargs)
+        super().update(request, *args, **kwargs)
+        instance = self.get_object()
+        serializer = ContractDetailSerializer(
+            instance, context={'request': request}
+        )
+        return Response(serializer.data)
 
 
 class EventViewSet(viewsets.ModelViewSet):
