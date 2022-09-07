@@ -67,3 +67,4 @@ The admin-user (Manager Team members) are able to access the Admin-UI at the URL
 - Django -version 4.0.5
 - django-crispy-forms -version 1.14.0
 - djangorestframework -version 3.13.1
+- PostgreSQL -version 14.4
