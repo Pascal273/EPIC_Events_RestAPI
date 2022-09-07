@@ -68,6 +68,18 @@ class PotentialClientViewSet(viewsets.ModelViewSet):
         instance.delete()
         return Response({'message': 'Client has been deleted'})
 
+    def update(self, request, *args, **kwargs):
+        """
+        Update method that allows partial updates and returns detailed view
+        """
+        kwargs['partial'] = True
+        super().update(request, *args, **kwargs)
+        instance = self.get_object()
+        serializer = ClientDetailSerializer(
+            instance, context={'request': request}
+        )
+        return Response(serializer.data)
+
 
 class ExistingClientViewSet(viewsets.ModelViewSet):
     """API endpoint that allows existing Clients to be viewed."""
@@ -96,6 +108,18 @@ class ExistingClientViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         instance.delete()
         return Response({'message': 'Client has been deleted'})
+
+    def update(self, request, *args, **kwargs):
+        """
+        Update method that allows partial updates and returns detailed view
+        """
+        kwargs['partial'] = True
+        super().update(request, *args, **kwargs)
+        instance = self.get_object()
+        serializer = ClientDetailSerializer(
+            instance, context={'request': request}
+        )
+        return Response(serializer.data)
 
 
 class ContractViewSet(viewsets.ModelViewSet):
