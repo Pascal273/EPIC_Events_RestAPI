@@ -54,28 +54,6 @@ class TeamViewSet(viewsets.ModelViewSet):
     search_fields = ['name']
 
 
-class UserSignUpView(GenericAPIView):
-    serializer_class = SignUpSerializer
-    permission_classes = [permissions.AllowAny, IsNotAuthenticated]
-    write_only = True
-
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-
-        if serializer.is_valid():
-            try:
-                user = get_user_model()
-                validate_password(serializer.data['password'], user)
-            except ValidationError as error:
-                return Response(str(error), status=status.HTTP_400_BAD_REQUEST)
-
-            serializer.create(serializer.data)
-            return Response({'Account created': serializer.data['email']},
-                            status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 def signup(request):
     """The view for the sign-up page."""
     # allow only unauthenticated user to visit the signup page
