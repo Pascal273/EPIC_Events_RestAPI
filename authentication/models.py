@@ -81,14 +81,6 @@ class Team(Group):
         return self.name
 
 
-# TODO save changes on team permissions on user permissions!
-# @receiver(post_save, sender=Team)
-# def post_save_permissions(sender, instance, created, **kwargs):
-#     if not created:
-#         print(instance.permissions.all())
-#         print(kwargs)
-
-
 class TeamMembership(models.Model):
     """Through table to establish the team membership of an employee"""
     user = models.OneToOneField(to=User,
@@ -128,7 +120,7 @@ class TeamMembership(models.Model):
             user.is_staff = True
             user.is_superuser = True
         # members of other teams are not staff nor superusers.
-        if user.groups.first().name != 'Management':
+        else:
             user.is_staff = False
             user.is_superuser = False
         user.save()
