@@ -42,7 +42,14 @@ class SignUpForm(UserCreationForm):
         label="",
     )
     birth_date = forms.DateField(
-        widget=forms.DateInput(attrs={"placeholder": "Birth Date: yyyy-MM-dd"}),
+        widget=forms.DateInput(
+            format='%Y-%m-%d',
+            attrs={
+                "class": "form-control",
+                "placeholder": "Birth Date: yyyy-MM-dd",
+                "type": "date"
+            },
+        ),
         label="",
         required=True,
     )

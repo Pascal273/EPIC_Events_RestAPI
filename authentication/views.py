@@ -65,6 +65,5 @@ def signup(request):
         if form.is_valid():
             form.save()
             return redirect('/')
-    else:
-        form = SignUpForm()
-        return render(request, 'signup/signup.html', {'form': form})
+    form = SignUpForm()
+    return render(request, 'signup/signup.html', {'form': form})
