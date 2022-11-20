@@ -70,4 +70,4 @@ The admin-user (Manager Team members) are able to access the Admin-UI at the URL
 - PostgreSQL -version 14.4
 
 ### Postman api-documentation:
-https://www.postman.com/galactic-meadow-498703/workspace/d186603e-6a6e-4559-afcd-869cf67eed16/documentation/20098177-e45a0823-ec53-4979-a509-be53ac03ff0a
+[Postman](https://documenter.getpostman.com/view/20098177/2s8YmSsLVK)
